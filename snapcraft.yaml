@@ -1,0 +1,31 @@
+name: glmark2-example
+version: '0.1'
+summary: GLMark2 IoT example kiosk
+description: GLMark2 IoT example kiosk, using Wayland
+base: core18
+confinement: strict
+grade: devel
+
+apps:
+  glmark2-example:
+    daemon: simple
+    restart-condition: always
+    command: |
+      bash -c "mkdir -p $XDG_RUNTIME_DIR
+               ln -s $XDG_RUNTIME_DIR/../wayland-0 $XDG_RUNTIME_DIR/
+               $SNAP/usr/bin/glmark2-wayland --fullscreen"
+    plugs:
+      - opengl
+      - wayland
+    environment:
+      __EGL_VENDOR_LIBRARY_DIRS: "$SNAP/etc/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d"
+
+parts:
+  glmark2-wayland:
+    plugin: nil
+    stage-packages:
+      - glmark2-wayland
+
+layout:
+  /usr/share/glmark2:
+    bind: $SNAP/usr/share/glmark2
